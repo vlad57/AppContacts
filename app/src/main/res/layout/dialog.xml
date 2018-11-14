@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <ImageView
+        android:layout_width="354dp"
+        android:layout_height="85dp"
+        android:id="@+id/imageNew"
+        />
+
+
+    <EditText
+        android:id="@+id/Name"
+        android:layout_width="match_parent"
+        android:hint="Name"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/Number"
+        android:layout_width="match_parent"
+        android:hint="Number"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/Email"
+        android:layout_width="match_parent"
+        android:hint="Email"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="150px"
+        android:orientation="horizontal">
+        <Button
+            android:text="Valider"
+            android:id="@+id/valider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center|left"/>
+
+        <Button
+            android:id="@+id/annuler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center|right"
+            android:text="Annuler" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
