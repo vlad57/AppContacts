@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,10 +66,9 @@ public class DBHandler extends SQLiteOpenHelper {
 
     private boolean checkDuplicateContact(ContentValues contentValues) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(DB_TABLE, null, COL_NAME + " = ? AND " + COL_NUMBER + " = ?",
+        Cursor cursor = db.query(DB_TABLE, null, COL_NAME + " = ?",
                 new String[]{
-                        String.valueOf(contentValues.get(COL_NAME)),
-                        String.valueOf(contentValues.get(COL_NUMBER))
+                        String.valueOf(contentValues.get(COL_NAME))
                 },
                 null, null, null);
 

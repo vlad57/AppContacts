@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -63,8 +64,13 @@ public class DetailActivity extends AppCompatActivity {
         ButtonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.updateContact(getIntent().getStringExtra(Constantes.ID_KEY), NameDetail.getText().toString(), NumberDetail.getText().toString(), EmailDetail.getText().toString(), imageViewToByte(imageDetail));
-                DetailActivity.this.finish();
+                if (TextUtils.isEmpty(NameDetail.getText()) || TextUtils.isEmpty(NumberDetail.getText()) || TextUtils.isEmpty(EmailDetail.getText().toString())){
+                    Toast.makeText(DetailActivity.this, "Complete all fields.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    db.updateContact(getIntent().getStringExtra(Constantes.ID_KEY), NameDetail.getText().toString(), NumberDetail.getText().toString(), EmailDetail.getText().toString(), imageViewToByte(imageDetail));
+                    DetailActivity.this.finish();
+                }
             }
         });
 

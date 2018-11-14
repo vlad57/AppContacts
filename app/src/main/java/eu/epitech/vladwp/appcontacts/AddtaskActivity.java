@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,7 +36,7 @@ public class AddtaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addtask);
 
-        AppCompatButton Add_task = (AppCompatButton) findViewById(R.id.add);
+        final AppCompatButton Add_task = (AppCompatButton) findViewById(R.id.add);
         AppCompatButton Cancel_task = (AppCompatButton)findViewById(R.id.cancelAddtask);
         final EditText Name = (EditText)findViewById(R.id.newName);
         final EditText Number = (EditText)findViewById(R.id.newNumber);
@@ -61,16 +62,18 @@ public class AddtaskActivity extends AppCompatActivity {
         Add_task.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ImageNContact.getDrawable() != null){
-                    myDB.addContact(Name.getText().toString(),Number.getText().toString(), Email.getText().toString(), imageViewToByte(ImageNContact));
+                if (TextUtils.isEmpty(Name.getText()) || TextUtils.isEmpty(Number.getText()) || TextUtils.isEmpty(Email.getText())) {
+                    Toast.makeText(AddtaskActivity.this, "Complete all fields.", Toast.LENGTH_LONG).show();
                 }
-                else{
-                    final Resources myRes = getResources();
-                    final Drawable zeroImage = myRes.getDrawable(R.drawable.android);
-                    ImageNContact.setImageDrawable(zeroImage);
-                    myDB.addContact(Name.getText().toString(),Number.getText().toString(), Email.getText().toString(), imageViewToByte(ImageNContact));
+                else {
+                    Long retourDB = myDB.addContact(Name.getText().toString(), Number.getText().toString(), Email.getText().toString(), imageViewToByte(ImageNContact));
+                    if (retourDB == -1){
+                        Toast.makeText(AddtaskActivity.this, "Contact already exist.", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        AddtaskActivity.this.finish();
+                    }
                 }
-                AddtaskActivity.this.finish();
             }
         });
 
