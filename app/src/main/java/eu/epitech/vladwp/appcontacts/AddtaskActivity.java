@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,6 +72,14 @@ public class AddtaskActivity extends AppCompatActivity {
                         Toast.makeText(AddtaskActivity.this, "Contact already exist.", Toast.LENGTH_LONG).show();
                     }
                     else{
+                        Intent intent = new Intent(AddtaskActivity.this, MainActivity.class);
+                        Log.e("OKLM", "IDRETOURDB : " + Integer.valueOf(retourDB.intValue()));
+                        intent.putExtra("IDRETOURDB", Integer.valueOf(retourDB.intValue()));
+                        intent.putExtra(Constantes.NAME_KEY, Name.getText().toString());
+                        intent.putExtra(Constantes.NUMBER_KEY, Number.getText().toString());
+                        intent.putExtra(Constantes.EMAIL_KEY, Email.getText().toString());
+                        intent.putExtra(Constantes.IMAGE_KEY,imageViewToByte(ImageNContact));
+                        setResult(RESULT_OK, intent);
                         AddtaskActivity.this.finish();
                     }
                 }

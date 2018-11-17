@@ -1,6 +1,7 @@
 package eu.epitech.vladwp.appcontacts;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public List<Model> ListModel;
     public DBHandler myDB;
     private MyAdapter monAdapter;
+    private SearchView searchView;
 
 
     @Override
@@ -43,10 +45,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onClick(MyAdapter.MyViewHolder holder, int position) {
                 Log.e("ClickNormal", Integer.valueOf(holder.IdDBElement).toString());
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("MAPOSITION", position);
                 intent.putExtra(Constantes.ID_KEY, Integer.valueOf(holder.IdDBElement).toString());
                 intent.putExtra(Constantes.NAME_KEY, holder.mTextName.getText().toString());
                 intent.putExtra(Constantes.NUMBER_KEY, holder.mTextNumber.getText().toString());
-                startActivity(intent);
+                startActivityForResult(intent, 2);
             }
 
 
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onClick(View v) {
                 Intent intentNew = new Intent(MainActivity.this, AddtaskActivity.class);
-                startActivity(intentNew);
+                startActivityForResult(intentNew, 1);
             }
         });
 
@@ -83,25 +86,32 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView = (SearchView) menuItem.getActionView();
         searchView.setOnQueryTextListener(this);
         return true;
     }
 
     @Override
-    protected void onResume(){
-        super.onResume();
-       if (ListModel.isEmpty()){
-            ListModel = myDB.getAllContacts();
-            monAdapter = new MyAdapter(MainActivity.this, ListModel);
-            mRecyclerView.setAdapter(monAdapter);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK){
+            if (requestCode == 1){
+                Log.e("RETOUR DB MAI", "RETOUR DB MAIN" + data.getExtras().getInt("IDRETOURDB"));
+                ListModel.add(new Model(data.getExtras().getInt("IDRETOURDB"), data.getStringExtra(Constantes.NAME_KEY), data.getStringExtra(Constantes.NUMBER_KEY), data.getStringExtra(Constantes.EMAIL_KEY), data.getByteArrayExtra(Constantes.IMAGE_KEY)));
+                synchronized (monAdapter){
+                    monAdapter.notifyDataSetChanged();
+                    onQueryTextChange("");
+                    searchView.setQuery("", false);
+                    searchView.setIconified(false);
+                }
+            }
+            else if (requestCode == 2){
+                ListModel.set(data.getExtras().getInt("MAPOSITIONRETOUR"), new Model(Integer.valueOf(data.getStringExtra(Constantes.ID_KEY)), data.getStringExtra(Constantes.NAME_KEY), data.getStringExtra(Constantes.NUMBER_KEY), data.getStringExtra(Constantes.EMAIL_KEY), data.getByteArrayExtra(Constantes.IMAGE_KEY)));
+                monAdapter.notifyItemChanged(data.getExtras().getInt("MAPOSITIONRETOUR"));
+                onQueryTextChange("");
+                searchView.setQuery("", false);
+                searchView.setIconified(false);
+            }
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        ListModel.clear();
     }
 
     @Override

@@ -13,7 +13,8 @@ public class Model {
     public Model(){
     }
 
-    public Model (String Name, String Number, String Email, byte[] Image){
+    public Model (int Id, String Name, String Number, String Email, byte[] Image){
+        this.id = Id;
         this.name = Name;
         this.number = Number;
         this.email = Email;

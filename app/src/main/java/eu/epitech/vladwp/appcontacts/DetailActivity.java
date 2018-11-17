@@ -33,6 +33,8 @@ public class DetailActivity extends AppCompatActivity {
     byte[]getImage;
     Bitmap mybitmap;
     final int REQUEST_CODE_GALLERY = 999;
+    int maposition;
+    String ID_OBJECT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class DetailActivity extends AppCompatActivity {
         imageDetail = (ImageView)findViewById(R.id.imageDetail);
 
         ListModel = db.getSpecificContact(getIntent().getStringExtra(Constantes.ID_KEY));
+        maposition = getIntent().getExtras().getInt("MAPOSITION");
+        ID_OBJECT = getIntent().getStringExtra(Constantes.ID_KEY);
 
         for (Model model : ListModel) {
             NameDetail.setText(model.getName());
@@ -68,7 +72,15 @@ public class DetailActivity extends AppCompatActivity {
                     Toast.makeText(DetailActivity.this, "Complete all fields.", Toast.LENGTH_LONG).show();
                 }
                 else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
                     db.updateContact(getIntent().getStringExtra(Constantes.ID_KEY), NameDetail.getText().toString(), NumberDetail.getText().toString(), EmailDetail.getText().toString(), imageViewToByte(imageDetail));
+                    intent.putExtra("MAPOSITIONRETOUR", maposition);
+                    intent.putExtra(Constantes.ID_KEY, ID_OBJECT);
+                    intent.putExtra(Constantes.NAME_KEY, NameDetail.getText().toString());
+                    intent.putExtra(Constantes.NUMBER_KEY, NumberDetail.getText().toString());
+                    intent.putExtra(Constantes.EMAIL_KEY, EmailDetail.getText().toString());
+                    intent.putExtra(Constantes.IMAGE_KEY, imageViewToByte(imageDetail));
+                    setResult(RESULT_OK, intent);
                     DetailActivity.this.finish();
                 }
             }
