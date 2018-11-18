@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -35,6 +36,15 @@ public class DetailActivity extends AppCompatActivity {
     final int REQUEST_CODE_GALLERY = 999;
     int maposition;
     String ID_OBJECT;
+    public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+"
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +78,10 @@ public class DetailActivity extends AppCompatActivity {
         ButtonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(NameDetail.getText()) || TextUtils.isEmpty(NumberDetail.getText()) || TextUtils.isEmpty(EmailDetail.getText().toString())){
+                if (!checkEmail(EmailDetail.getText().toString())){
+                    Toast.makeText(DetailActivity.this, "Invalid email address.", Toast.LENGTH_LONG).show();
+                }
+                else if (TextUtils.isEmpty(NameDetail.getText()) || TextUtils.isEmpty(NumberDetail.getText()) || TextUtils.isEmpty(EmailDetail.getText().toString())){
                     Toast.makeText(DetailActivity.this, "Complete all fields.", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -103,6 +116,10 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean checkEmail(String email) {
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
     }
 
     public static byte[] imageViewToByte(ImageView image) {

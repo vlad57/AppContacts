@@ -24,12 +24,22 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 public class AddtaskActivity extends AppCompatActivity {
 
     final int REQUEST_CODE_GALLERY = 999;
     ImageView ImageNContact;
     public DBHandler myDB;
+    public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+"
+    );
 
 
     @Override
@@ -68,7 +78,10 @@ public class AddtaskActivity extends AppCompatActivity {
                 }
                 else {
                     Long retourDB = myDB.addContact(Name.getText().toString(), Number.getText().toString(), Email.getText().toString(), imageViewToByte(ImageNContact));
-                    if (retourDB == -1){
+                    if (!checkEmail(Email.getText().toString())){
+                        Toast.makeText(AddtaskActivity.this, "Invalid email address.", Toast.LENGTH_LONG).show();
+                    }
+                    else if (retourDB == -1){
                         Toast.makeText(AddtaskActivity.this, "Contact already exist.", Toast.LENGTH_LONG).show();
                     }
                     else{
@@ -92,6 +105,10 @@ public class AddtaskActivity extends AppCompatActivity {
                 AddtaskActivity.this.finish();
             }
         });
+    }
+
+    private boolean checkEmail(String email) {
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
     }
 
     public static byte[] imageViewToByte(ImageView image) {
