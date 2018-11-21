@@ -131,8 +131,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return ListModel;
     }
 
-    public long updateContact(String Id, String newName, String newNumber, String newEmail, byte[] newImage) {
-        long retourInsert = -1;
+    public void updateContact(String Id, String newName, String newNumber, String newEmail, byte[] newImage) {
         SQLiteDatabase db = this.getWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put(COL_NAME, newName);
@@ -140,15 +139,12 @@ public class DBHandler extends SQLiteOpenHelper {
             contentValues.put(COL_EMAIL, newEmail);
             contentValues.put(COL_IMAGE, newImage);
             //updating rows
-        if (!checkDuplicateContact(contentValues)) {
-            retourInsert = db.update(DB_TABLE, contentValues, COL_ID + " = ?",
+            db.update(DB_TABLE, contentValues, COL_ID + " = ?",
                     new String[]{
                             Id
                     }
             );
-        }
             db.close();
-        return retourInsert;
     }
 
     public void deleteContact(String Id) {
