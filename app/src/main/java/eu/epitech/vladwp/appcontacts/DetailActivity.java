@@ -84,17 +84,23 @@ public class DetailActivity extends AppCompatActivity {
                 else if (TextUtils.isEmpty(NameDetail.getText()) || TextUtils.isEmpty(NumberDetail.getText()) || TextUtils.isEmpty(EmailDetail.getText().toString())){
                     Toast.makeText(DetailActivity.this, "Complete all fields.", Toast.LENGTH_LONG).show();
                 }
+
                 else {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    db.updateContact(getIntent().getStringExtra(Constantes.ID_KEY), NameDetail.getText().toString(), NumberDetail.getText().toString(), EmailDetail.getText().toString(), imageViewToByte(imageDetail));
-                    intent.putExtra("MAPOSITIONRETOUR", maposition);
-                    intent.putExtra(Constantes.ID_KEY, ID_OBJECT);
-                    intent.putExtra(Constantes.NAME_KEY, NameDetail.getText().toString());
-                    intent.putExtra(Constantes.NUMBER_KEY, NumberDetail.getText().toString());
-                    intent.putExtra(Constantes.EMAIL_KEY, EmailDetail.getText().toString());
-                    intent.putExtra(Constantes.IMAGE_KEY, imageViewToByte(imageDetail));
-                    setResult(RESULT_OK, intent);
-                    DetailActivity.this.finish();
+                    Long retourDB = db.updateContact(getIntent().getStringExtra(Constantes.ID_KEY), NameDetail.getText().toString(), NumberDetail.getText().toString(), EmailDetail.getText().toString(), imageViewToByte(imageDetail));
+                    if (retourDB == -1){
+                        Toast.makeText(DetailActivity.this, "Contact already exist.", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        intent.putExtra("MAPOSITIONRETOUR", maposition);
+                        intent.putExtra(Constantes.ID_KEY, ID_OBJECT);
+                        intent.putExtra(Constantes.NAME_KEY, NameDetail.getText().toString());
+                        intent.putExtra(Constantes.NUMBER_KEY, NumberDetail.getText().toString());
+                        intent.putExtra(Constantes.EMAIL_KEY, EmailDetail.getText().toString());
+                        intent.putExtra(Constantes.IMAGE_KEY, imageViewToByte(imageDetail));
+                        setResult(RESULT_OK, intent);
+                        DetailActivity.this.finish();
+                    }
                 }
             }
         });
